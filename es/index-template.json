@@ -1,0 +1,20 @@
+{
+  "index_patterns": ["shopflow-logs-*"],
+  "priority": 300,
+  "template": {
+    "settings": {"number_of_shards": 1, "number_of_replicas": 0, "refresh_interval": "5s", "index.lifecycle.name": "shopflow-logs-policy"},
+    "mappings": {
+      "dynamic_templates": [{"strings_as_keyword": {"match_mapping_type": "string", "mapping": {"type": "keyword", "ignore_above": 256}}}],
+      "properties": {
+        "@timestamp": {"type": "date"},
+        "level": {"type": "keyword"}, "service": {"type": "keyword"}, "event": {"type": "keyword"},
+        "message": {"type": "text", "fields": {"keyword": {"type": "keyword", "ignore_above": 256}}},
+        "order_id": {"type": "keyword"}, "user_id": {"type": "keyword"}, "session_id": {"type": "keyword"}, "product_id": {"type": "keyword"},
+        "amount": {"type": "float"}, "payment_method": {"type": "keyword"}, "response_ms": {"type": "integer"}, "http_status": {"type": "short"},
+        "client_ip": {"type": "ip", "ignore_malformed": true},
+        "geoip": {"properties": {"country_name": {"type": "keyword"}, "country_code2": {"type": "keyword"}, "city_name": {"type": "keyword"}, "location": {"type": "geo_point"}}},
+        "tags": {"type": "keyword"}, "file_id": {"type": "keyword"}, "source_file": {"type": "keyword"}, "ingested_at": {"type": "date"}
+      }
+    }
+  }
+}
