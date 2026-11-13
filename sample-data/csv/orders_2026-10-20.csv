@@ -1,0 +1,4 @@
+timestamp,level,service,event,message,order_id,user_id,session_id,product_id,amount,payment_method,response_ms,client_ip
+2026-10-20T14:02:11Z,INFO,payment-api,PAYMENT_SUCCESS,Payment accepted,ORD-1042,U-517,S-9920,P-14,89.90,card,310,41.226.10.5
+2026-10-20T14:02:15Z,ERROR,payment-api,PAYMENT_TIMEOUT,Gateway timeout,ORD-1043,U-518,S-9921,P-27,89.90,card,5000,41.226.10.6
+2026-10-20T14:02:19Z,INFO,cart,ADD_TO_CART,Item added,,U-519,S-9922,P-03,,,45,196.203.1.20

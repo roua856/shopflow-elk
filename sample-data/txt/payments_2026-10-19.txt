@@ -1,0 +1,3 @@
+2026-10-19T18:40:01Z [INFO] payment-api: Payment accepted order=ORD-3001
+2026-10-19T18:40:07Z [ERROR] payment-api: Card declined by provider order=ORD-3002
+this line is malformed on purpose

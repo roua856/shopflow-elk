@@ -1,0 +1,2 @@
+{"timestamp":"2026-10-21T09:12:01Z","level":"INFO","service":"checkout","event":"ORDER_CREATED","message":"Order created","order_id":"ORD-2001","amount":120.5,"response_ms":210,"client_ip":"41.226.10.9"}
+{"timestamp":"2026-10-21T09:12:09Z","level":"ERROR","service":"checkout","event":"ORDER_FAILED","message":"Order creation failed","order_id":"ORD-2002","response_ms":900,"client_ip":"41.226.10.10"}
