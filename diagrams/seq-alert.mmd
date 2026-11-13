@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    participant K as alert-worker
+    participant M as mongodb
+    participant E as elasticsearch
+    participant R as redis
+    participant N as email and webhook
+    actor D as DevOps engineer
+    loop every minute
+        K->>M: read enabled alert rules
+        K->>E: count logs matching the rule in its window
+        E-->>K: observed value
+        alt condition true
+            K->>R: EXISTS alert:cooldown:ruleId
+            alt no cooldown
+                K->>M: insert alert (status active)
+                K->>N: send email and webhook
+                K->>R: SET alert:cooldown:ruleId EX cooldown
+            else cooldown active
+                K->>K: skip, same incident
+            end
+        end
+    end
+    N-->>D: notification
+    D->>M: acknowledge, comment, resolve

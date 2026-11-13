@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    actor A as Analyst
+    participant W as webapp
+    participant R as redis
+    participant E as elasticsearch
+    participant M as mongodb
+    A->>W: GET /search (text, level, service, dates)
+    W->>R: check session and rate limit
+    W->>R: GET cache:search:hash
+    alt cache hit
+        R-->>W: cached results
+    else cache miss
+        W->>E: search (bool query, sort, size 50)
+        E-->>W: hits and total
+        W->>R: SETEX cache:search:hash 60 results
+    end
+    W->>M: insert search history
+    W-->>A: results table and total count
+    opt export to CSV
+        A->>W: GET /api/v1/logs?format=csv
+        W->>E: scroll through all matching logs
+        W-->>A: CSV file
+    end

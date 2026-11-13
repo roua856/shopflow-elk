@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    actor A as Analyst
+    participant W as webapp
+    participant M as mongodb
+    participant R as redis
+    participant F as watched folder
+    participant L as logstash
+    participant E as elasticsearch
+    A->>W: POST /api/v1/files (file)
+    W->>W: check extension, size, structure
+    alt file invalid
+        W-->>A: 400 with a clear error message
+    else file valid
+        W->>M: insert file document (status uploaded)
+        W->>F: save the file as fileId__name
+        W->>R: LPUSH queue:ingestion fileId
+        W-->>A: 202 with fileId and first 10 lines
+    end
+    L->>F: detect the new file and read it
+    L->>L: parse, date, mutate, geoip, tags
+    L->>E: bulk index into shopflow-logs
+    W->>E: count logs where file_id = fileId
+    W->>M: update file (status indexed, logs_count)
