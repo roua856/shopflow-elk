@@ -1,5 +1,5 @@
 {
-  "index_patterns": ["shopflow-logs-*"],
+  "index_patterns": ["shopflow-logs-*", "shopflow-failures-*"],
   "priority": 300,
   "template": {
     "settings": {"number_of_shards": 1, "number_of_replicas": 0, "refresh_interval": "5s", "index.lifecycle.name": "shopflow-logs-policy"},
