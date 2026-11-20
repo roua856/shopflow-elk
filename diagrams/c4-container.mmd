@@ -1,0 +1,31 @@
+flowchart LR
+    analyst["<b>Shop analyst</b><br/>[Person]"]
+
+    subgraph SF["ShopFlow  [Software system, Docker Compose]"]
+        direction LR
+        web["<b>Web application</b><br/>[Flask + gunicorn :8000]<br/>Upload, search, alert rules,<br/>sessions, rate limit"]
+        kb["<b>Kibana</b><br/>[8.15 :5601]<br/>Observability dashboards"]
+        uploads[("<b>Uploads folder</b><br/>[Shared volume]<br/>CSV, JSON, TXT files")]
+        ls["<b>Logstash</b><br/>[8.15, 3 pipelines]<br/>Parse, geoip, route failures"]
+        es[("<b>Elasticsearch</b><br/>[8.15 :9200]<br/>shopflow-logs-*<br/>shopflow-failures-*")]
+        mongo[("<b>MongoDB</b><br/>[7 :27017]<br/>users, files, searches,<br/>alert_rules, alerts")]
+        redis[("<b>Redis</b><br/>[7 :6379]<br/>sessions, cache, rate limit,<br/>ingest status, alert cooldown")]
+    end
+
+    analyst -- "app: HTTP :8000" --> web
+    analyst -. "dashboards: HTTP :5601" .-> kb
+    web -- "writes files" --> uploads
+    uploads -- "tailed by" --> ls
+    ls -- "indexes" --> es
+    web -- "search, alert checks" --> es
+    kb -- "reads" --> es
+    web -- "metadata" --> mongo
+    web -- "keys with TTL" --> redis
+
+    classDef person fill:#08427b,stroke:#052e56,color:#fff
+    classDef container fill:#438dd5,stroke:#2e6295,color:#fff
+    classDef store fill:#2f7d6d,stroke:#1f5a4e,color:#fff
+    class analyst person
+    class web,ls,kb container
+    class es,mongo,redis,uploads store
+    style SF fill:#ffffff,stroke:#888,stroke-dasharray:6 4

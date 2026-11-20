@@ -1,0 +1,15 @@
+flowchart TB
+    shop["<b>Shop systems</b><br/>[External system]<br/>Web shop, cart, checkout and<br/>payment gateway produce<br/>CSV, JSON and TXT logs"]
+    analyst["<b>Shop analyst</b><br/>[Person]<br/>Uploads logs, searches them,<br/>reads dashboards, manages alerts"]
+    shopflow["<b>ShopFlow</b><br/>[Software system]<br/>Log monitoring platform:<br/>ingest, search, dashboards, alerting"]
+
+    shop -- "Log files" --> analyst
+    analyst -- "Uploads files, searches,<br/>defines alert rules [HTTP]" --> shopflow
+    shopflow -. "Results, dashboards, alerts" .-> analyst
+
+    classDef person fill:#08427b,stroke:#052e56,color:#fff
+    classDef system fill:#1168bd,stroke:#0b4884,color:#fff
+    classDef ext fill:#8a8a8a,stroke:#6b6b6b,color:#fff
+    class analyst person
+    class shopflow system
+    class shop ext
