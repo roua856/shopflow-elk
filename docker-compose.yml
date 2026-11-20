@@ -83,6 +83,8 @@ services:
     image: shopflow-webapp:latest
     restart: unless-stopped
     env_file: .env
+    volumes:
+      - ./sample-data:/data/uploads
     depends_on:
       elasticsearch: { condition: service_healthy }
       mongodb: { condition: service_healthy }

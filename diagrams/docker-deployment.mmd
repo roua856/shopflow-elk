@@ -1,0 +1,43 @@
+flowchart TB
+    user(["<b>Browser</b><br/>(analyst)"])
+
+    subgraph HOST["Host: Ubuntu 20.04 laptop, Docker Engine + Compose plugin (docker compose up -d)"]
+        subgraph NET["Docker network: shopflow-elk_shopflow (bridge)"]
+            web["<b>webapp</b><br/>build: ./webapp<br/>python:3.11-slim<br/>:8000"]
+            kb["<b>kibana</b><br/>kibana:8.15.3<br/>:5601"]
+            ls["<b>logstash</b><br/>logstash:8.15.3<br/>heap 512m<br/>:9600 internal"]
+            es["<b>elasticsearch</b><br/>elasticsearch:8.15.3<br/>heap 512m<br/>:9200"]
+            mongo["<b>mongodb</b><br/>mongo:7<br/>:27017"]
+            redis["<b>redis</b><br/>redis:7-alpine<br/>:6379"]
+        end
+        v1[("volume esdata")]
+        v2[("volume mongodata")]
+        v3[("volume lsdata<br/>sincedb")]
+        b1[/"bind ./sample-data<br/>/data/uploads"/]
+        b2[/"bind ./logstash/*<br/>config and pipelines (ro)"/]
+    end
+
+    user -- ":8000" --> web
+    user -- ":5601" --> kb
+    ls -. "after healthy" .-> es
+    kb -. "after healthy" .-> es
+    web -. "after healthy" .-> es
+    web -. "after healthy" .-> mongo
+    web -. "after healthy" .-> redis
+    es --- v1
+    mongo --- v2
+    ls --- v3
+    web --- b1
+    ls --- b1
+    ls --- b2
+
+    classDef svc fill:#438dd5,stroke:#2e6295,color:#fff
+    classDef store fill:#2f7d6d,stroke:#1f5a4e,color:#fff
+    classDef mount fill:#c98a1b,stroke:#8f6010,color:#fff
+    classDef person fill:#08427b,stroke:#052e56,color:#fff
+    class web,kb,ls,es,mongo,redis svc
+    class v1,v2,v3 store
+    class b1,b2 mount
+    class user person
+    style HOST fill:#ffffff,stroke:#888
+    style NET fill:#f4f8fc,stroke:#6a9bd1,stroke-dasharray:6 4
